@@ -1,0 +1,9 @@
+Third-party code in this repository
+
+- src/tile.c: home screen (Media) tile registration is adapted from PS-Play /
+  ProsperoPlayer's media launcher (https://github.com/MounirHero/PS-Play),
+  GPL-3.0-or-later.
+- src/xz/: XZ Embedded (https://github.com/tukaani-project/xz-embedded), 0BSD,
+  see src/xz/COPYING.
+
+Linux Flasher as a whole is licensed under GPL-3.0-or-later (see LICENSE).

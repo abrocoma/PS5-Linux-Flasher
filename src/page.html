@@ -1,0 +1,406 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Linux Flasher</title>
+<style>
+:root{--bg:#0d0f13;--panel:#151820;--card:#1b1f29;--card2:#202533;--ink:#eceef2;--mute:#8e96a3;--dim:#5d6572;--line:#262b37;--ok:#3fbf6a;--bad:#ef5f5f;--warn:#e7a93c;--acc:#4a8ff5;--acc2:#2f6fd6}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+*{scrollbar-color:#2c3240 transparent;scrollbar-width:thin}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#2c3240;border-radius:99px}
+svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px}
+header{display:grid;grid-template-columns:1fr auto 1fr;padding-left:max(20px,calc((100% - 1240px)/2 + 20px));padding-right:max(20px,calc((100% - 1240px)/2 + 20px));align-items:center;gap:12px;padding:10px 20px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#181c26,var(--panel))}
+.hl{display:flex;align-items:center;gap:10px}.hr{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.brand{display:flex;flex-direction:column;align-items:center;gap:2px}.bt{display:flex;align-items:center;gap:10px}
+h1{font-size:21px;margin:0;font-weight:750;letter-spacing:.3px}
+.tagline{color:var(--dim);font-size:12px;letter-spacing:.2px}
+.gh{color:var(--mute);text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:4px}.gh:hover{color:var(--ink)}.gh svg.i{width:13px;height:13px;vertical-align:0}
+.logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--acc),var(--acc2));display:flex;align-items:center;justify-content:center;color:#fff}
+.logo svg.i{width:20px;height:20px}
+.beta{font-size:10.5px;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:5px;background:#2a2140;color:#b79cff;border:1px solid #3d2f5e}
+#ver{color:var(--dim);font-size:12.5px}
+.sp{flex:1}
+#conn{display:flex;align-items:center;gap:6px;color:var(--mute);font-size:12.5px}
+#conn i{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block}
+.bootb{background:linear-gradient(180deg,#46c873,#2e9a54);border-color:#2e9a54;color:#fff;font-weight:650;height:36px;margin-right:6px}
+.ib{width:36px;height:36px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:9px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:16px 20px;max-width:1240px;margin:0 auto;align-items:stretch}
+.fb{display:flex;flex-direction:column;gap:12px}
+.fleft{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.fleft .warnline{margin:0;justify-content:center}
+.s3 .act{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.s3 .big{font-size:18px}.s3 .ah{margin:0 0 10px}.s3 .ah .ic{width:32px;height:32px}
+.s3 .tiles{gap:6px}.s3 .tile{padding:7px 8px}.s3 .tile b{font-size:14px}
+.s3 .stages{gap:4px;margin:0 0 10px}.s3 .line{width:10px}
+
+
+.col{display:flex;flex-direction:column;gap:12px}
+.col.right{position:sticky;top:16px}
+.step{--sc:var(--acc);--tint:rgba(74,143,245,.07);--selbg:#1a2335;position:relative;overflow:hidden;background:linear-gradient(180deg,var(--tint),rgba(0,0,0,0) 70%),var(--panel);border:1px solid var(--line);border-top:3px solid var(--sc);border-radius:14px;padding:13px 16px 14px}
+.step.s1{--sc:#4a8ff5;--tint:rgba(74,143,245,.09);--selbg:#18233a}
+.step.s2{--sc:#a77bf3;--tint:rgba(167,123,243,.09);--selbg:#231c38}
+.step.s3{--sc:#3fbf6a;--tint:rgba(63,191,106,.08);--selbg:#16281d}
+.sti{color:var(--sc);display:inline-flex;margin-right:6px;vertical-align:-2px}.sti svg.i{width:16px;height:16px}
+.sh{display:flex;align-items:center;gap:10px;margin:0 0 12px;min-height:30px}
+.num{width:26px;height:26px;border-radius:50%;background:var(--card2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--mute);flex:none}
+.num{color:var(--sc,var(--mute));border-color:var(--sc,var(--line))}
+.num.done{background:var(--sc,var(--acc));border-color:var(--sc,var(--acc));color:#fff}
+.st{font-weight:650;font-size:15.5px}
+.ss{color:var(--mute);font-size:12.5px}
+.sr{margin-left:auto;color:var(--mute);font-size:12.5px;display:flex;align-items:center;gap:5px}
+.tabs{display:flex;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:2px;margin:0 0 0 auto}
+.tab{border:0;background:transparent;color:var(--mute);padding:5px 11px;border-radius:7px;font-weight:600;font-size:13px;display:flex;align-items:center;gap:6px}
+.tab svg.i{width:15px;height:15px}
+.free{color:var(--mute);font-size:12.5px;display:flex;align-items:center;gap:6px;margin:0 0 8px}.free svg.i{width:14px;height:14px}
+.tab.on{background:var(--card2);color:var(--ink);box-shadow:0 1px 0 rgba(255,255,255,.04) inset}
+.card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 12px;margin:0 0 8px;cursor:pointer;transition:border-color .15s,background .15s}
+.card:last-child{margin-bottom:0}
+.card:hover{border-color:#36405a}
+.card.sel{}
+.card.off{opacity:.5;cursor:default}
+.card.off:hover{border-color:var(--line)}
+.ic{width:38px;height:38px;border-radius:10px;background:var(--card2);display:flex;align-items:center;justify-content:center;color:var(--mute);flex:none}
+.card.sel .ic{color:var(--sc,var(--acc))}
+.cb{min-width:0;flex:1}
+.ct{font-weight:600;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cm{color:var(--mute);font-size:12.5px;margin-top:1px;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
+.radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--dim);flex:none}
+.card.sel .radio{border-color:var(--sc,var(--acc));background:radial-gradient(var(--sc,var(--acc)) 45%,transparent 50%)}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;padding:1px 8px 1px 6px;border-radius:99px}
+.tag svg.i{width:12px;height:12px;vertical-align:0}
+.t-ok{background:#16301f;color:var(--ok)}.t-warn{background:#352a14;color:var(--warn)}.t-mute{background:var(--card2);color:var(--mute)}
+button{font:inherit;font-size:13.5px;padding:7px 13px;border-radius:9px;border:1px solid var(--line);background:var(--card2);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+button:hover:not(:disabled),button:focus{border-color:var(--acc);outline:none}
+button:disabled{opacity:.4;cursor:default}
+.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.dan{background:#3a1d1f;border-color:#5c2a2d;color:#ffb4b4}
+.ghost{background:transparent;border-color:transparent;color:var(--mute);padding:6px}
+.ghost:hover:not(:disabled){color:var(--bad);border-color:transparent}
+.go{justify-content:center;font-size:15px;font-weight:650;padding:10px 18px;flex:none}
+.flashrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.flashrow .warnline{margin:0;flex:1;min-width:180px;justify-content:center;text-align:center}
+.dlsec{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}
+.dlh{display:flex;align-items:center;gap:6px;margin:0 0 8px}.dlh svg.i{width:14px;height:14px}.dlh .free{margin:0;text-transform:none;letter-spacing:0;font-size:12px}
+.prow{display:flex;align-items:center;gap:10px;padding:7px 4px 7px 10px;border:1px solid var(--line);border-radius:9px;margin:0 0 6px;background:var(--card)}
+.prow .pt{font-weight:600;font-size:13.5px}.prow .pm{color:var(--mute);font-size:12px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prow button{padding:6px 10px}
+.s3 .go.pri{background:linear-gradient(180deg,#46c873,#2e9a54);border-color:#2e9a54;color:#fff}
+.s3 .go.pri:disabled{background:#1f3a29;border-color:#2a4a34;color:#9fbfaa;opacity:.7}
+.warnline{display:flex;gap:8px;align-items:center;color:var(--mute);font-size:12.5px;margin-top:9px}
+.warnline svg.i{color:var(--warn);width:16px;height:16px}
+.field{display:flex;gap:8px;margin:8px 0 0}
+.field input{flex:1;min-width:0;font:inherit;font-size:13.5px;padding:8px 11px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.field input:focus{border-color:var(--acc);outline:none}
+.hid{display:flex;gap:7px;align-items:flex-start;color:var(--dim);font-size:12.5px;margin-top:8px}.hid svg.i{width:14px;height:14px;margin-top:2px}
+.irow{display:flex;align-items:center;gap:8px;padding:0 8px 0 0;border:1px solid var(--line);border-radius:10px;margin:0 0 6px;background:var(--card);min-height:46px}
+.pickb{display:flex;align-items:center;gap:10px;flex:1;min-width:0;align-self:stretch;background:none;border:0;border-radius:10px;padding:8px 6px 8px 10px;margin:0;text-align:left;color:inherit;font:inherit;cursor:pointer}
+.pickb:hover:not(div),.pickb:focus{border-color:transparent;background:rgba(255,255,255,.03);outline:none}
+div.pickb{cursor:default}
+.shield{display:inline-flex;color:var(--ok)}.shield svg.i{width:15px;height:15px}
+.dcol{display:flex;flex-direction:column;min-width:0;flex:1;gap:1px}.dl1{display:flex;align-items:baseline;gap:10px;min-width:0}.dl1 .im{flex:none}
+.dl2{color:var(--dim);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.donei{display:inline-flex;color:var(--ok);padding:6px 8px;opacity:.8}
+.irow:hover{border-color:#36405a}
+.irow.sel{}
+.irow.na{cursor:default}.irow.na:hover{border-color:var(--line)}.irow.na .in{color:var(--mute)}
+.irow .radio{width:16px;height:16px;flex:none}.irow.na .radio{visibility:hidden}
+.irow.sel .radio{border-color:var(--sc,var(--acc));background:radial-gradient(var(--sc,var(--acc)) 45%,transparent 50%)}
+.in{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.im{color:var(--mute);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;display:block}
+.im .shield{vertical-align:-2px;margin-left:6px}
+.irow .acts{display:flex;gap:4px;margin-left:auto;flex:none}
+.irow .acts button{padding:6px 9px}.irow .acts .ghost{padding:6px}
+.ibtn:disabled{opacity:.35}
+.dlp{color:var(--warn);font-weight:600}
+.hidl{margin-top:8px}.hidl .hid{margin-top:3px}
+.empty{color:var(--mute);font-size:13px;text-align:center;padding:14px 8px;border:1px dashed var(--line);border-radius:11px}
+.lbl{font-size:11.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--dim);margin:12px 0 6px}
+/* activity */
+.act{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--line);border-radius:14px;transition:border-color .3s;padding:16px;display:flex;flex-direction:column}
+.ah{display:flex;align-items:center;gap:10px;margin:0 0 14px}
+.big{font-size:22px;font-weight:700;letter-spacing:.2px}
+.stages{display:flex;align-items:center;gap:6px;margin:0 0 14px;flex-wrap:wrap}
+.stg{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--dim);font-weight:600}
+.stg b{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:10.5px}
+.stg.now{color:var(--ink)}.stg.now b{border-color:var(--acc);color:var(--acc)}
+.stg.fin{color:var(--ok)}.stg.fin b{border-color:var(--ok);background:var(--ok);color:#0d0f13}
+.stg.err{color:var(--bad)}.stg.err b{border-color:var(--bad);color:var(--bad)}
+.stg svg.i{width:12px;height:12px;stroke-width:3}
+.line{width:18px;height:2px;background:var(--line)}
+.bar{height:12px;background:var(--bg);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.bar div{height:100%;width:0;background:linear-gradient(90deg,var(--acc2),var(--acc));border-radius:99px;transition:width .5s}
+.bar.ok div{background:linear-gradient(90deg,#2e9a54,var(--ok))}
+.bar.bad div{background:var(--bad)}
+.pct{display:flex;justify-content:space-between;color:var(--mute);font-size:12.5px;margin:6px 0 12px}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 12px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+.tile b{display:block;font-size:17px;font-weight:650}.tile span{font-size:11.5px;color:var(--mute)}
+.msg{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:13.5px;margin:0 0 12px}
+.msg.ok{border-color:#245a37;background:#132519}.msg.ok svg.i{color:var(--ok)}
+.msg.bad{border-color:#5c2a2d;background:#2a1517}.msg.bad svg.i{color:var(--bad)}
+.msg.info svg.i{color:var(--acc)}
+.howto{color:var(--mute);font-size:13.5px}
+.howto li{margin:6px 0}
+details summary{cursor:pointer;color:var(--mute);font-size:13px;list-style:none;display:flex;align-items:center;gap:6px}
+details summary::-webkit-details-marker{display:none}
+pre{white-space:pre-wrap;word-break:break-all;font:12px/1.5 ui-monospace,"DejaVu Sans Mono",monospace;margin:8px 0 0;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:10px;color:#c9cfd9;max-height:260px;overflow:auto}
+.adv{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0}
+/* modal */
+#modal{position:fixed;inset:0;background:rgba(5,6,9,.7);display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
+#modal.on{display:flex}
+.mbox{background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:460px;width:100%;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.mbox h3{margin:0 0 8px;font-size:18px;display:flex;align-items:center;gap:9px}
+.mbox p{color:var(--mute);margin:0 0 10px;font-size:14px}
+.mbox .what{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 16px;font-size:13.5px}
+.mbtn{display:flex;gap:8px;justify-content:flex-end}
+@media (max-width:860px){.grid{display:flex;flex-direction:column}.tiles{grid-template-columns:repeat(2,1fr)}}
+</style></head>
+<body>
+<header>
+<div class="hl"><div id="conn"><i></i><span>Connected</span></div></div>
+<div class="brand"><div class="bt"><div class="logo" id="logo"></div><h1 id="appname">Linux Flasher</h1></div><div class="tagline">Flash Linux to USB on your PS5 &middot; <span id="ver"></span> &middot; by <a class="gh" href="https://github.com/abrocoma/PS5-Linux-Flasher" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>github.com/abrocoma</a></div></div>
+<div class="hr"><button class="bootb" id="b-boot" style="display:none" onclick="bootLinux()"></button><button class="ib" title="Stop" onclick="quit()" id="b-off"></button></div>
+</header>
+<div class="grid">
+ <div class="step s1">
+  <div class="sh"><div class="num" id="n1">1</div><div class="st"><span class="sti" id="i1"></span>Image</div><div class="sr" id="free"></div></div>
+  <div id="imgs"></div>
+ </div>
+ <div class="step s2">
+  <div class="sh"><div class="num" id="n2">2</div><div class="st"><span class="sti" id="i2"></span>Destination</div></div>
+  <div id="disks"></div>
+ </div>
+ <div class="step s3">
+  <div class="sh"><div class="num" id="n3">3</div><div class="st"><span class="sti" id="i3"></span>Flash</div></div>
+  <div class="fb">
+   <div class="fleft"><button id="go" class="pri go" disabled onclick="flash()"></button><div class="warnline" id="warnline"></div></div>
+   <div class="act" id="actbox">
+  <div class="ah"><div class="ic" id="aicon"></div><div><div class="big" id="atitle">Ready</div><div class="ss" id="asub">Nothing running</div></div><div class="sp"></div><button class="dan" id="acancel" style="display:none" onclick="cancelAny()"></button></div>
+  <div id="aidle"></div>
+  <div id="arun" style="display:none">
+   <div class="stages" id="stages"></div>
+   <div class="bar" id="bar"><div></div></div>
+   <div class="pct"><span id="p1"></span><span id="p2"></span></div>
+   <div class="tiles"><div class="tile"><b id="t1">&ndash;</b><span>speed</span></div><div class="tile"><b id="t2">&ndash;</b><span>time left</span></div><div class="tile"><b id="t3">&ndash;</b><span>elapsed</span></div></div>
+   <div class="msg" id="amsg"></div>
+   <details><summary id="detsum"></summary><pre id="out"></pre></details>
+  </div>
+ </div>
+  </div>
+ </div>
+</div>
+<div id="modal"><div class="mbox"><h3 id="mt"></h3><p id="mp"></p><div class="what" id="mw"></div><div class="mbtn"><button onclick="mclose()">Cancel</button><button id="mok"></button></div></div></div>
+<script>
+var I={
+usb:'<path d="M9 2h6v5H9z"/><path d="M7 7h10v9a5 5 0 0 1-10 0z"/><path d="M10 4h.01M14 4h.01"/>',
+disc:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/>',
+cloud:'<path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 8.5a4.25 4.25 0 0 1-.5 8.5z"/><path d="M12 11v6m-2.5-2.5L12 17l2.5-2.5"/>',
+dl:'<path d="M12 3v12m-5-5 5 5 5-5"/><path d="M4 19h16"/>',
+trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+check:'<path d="M5 12.5 10 17 19 7"/>',
+alert:'<path d="M12 3 2 20h20z"/><path d="M12 10v4m0 3h.01"/>',
+bolt:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+ref:'<path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v5h-5"/>',
+power:'<path d="M12 3v8"/><path d="M6.3 7.5a8 8 0 1 0 11.4 0"/>',
+shield:'<path d="M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/>',
+info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/>',
+x:'<path d="M6 6l12 12M18 6 6 18"/>',
+pause:'<path d="M9 5v14M15 5v14"/>',
+play:'<path d="M7 5v14l11-7z"/>',
+list:'<path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/>',
+tool:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/>',
+ok:'<circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.8 2.8L16.5 9.5"/>'};
+function ic(n){return '<svg class="i" viewBox="0 0 24 24">'+I[n]+'</svg>'}
+var S={img:null,dev:null,imgs:[],disks:[],parts:[],free:0,busy:false,dlbusy:false,dlname:'',mode:'idle',tab:'a'};
+function get(url,cb){var x=new XMLHttpRequest();x.open('GET',url,true);
+  x.onload=function(){conn(true);try{cb(JSON.parse(x.responseText))}catch(e){cb({ok:false,step:'parse',error:x.responseText})}};
+  x.onerror=function(){conn(false);cb({ok:false,step:'network',error:'Linux Flasher is not running. Load the payload again.'})};x.send();}
+function conn(on){var c=$('conn');c.firstChild.style.background=on?'var(--ok)':'var(--bad)';c.lastChild.textContent=on?'Connected':'Not running';}
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function gb(n){return n>0?(n/1e9).toFixed(n<1e10?2:1)+' GB':'?'}
+function mb(n){return n>=1e9?(n/1e9).toFixed(2)+' GB':(n/1e6).toFixed(0)+' MB'}
+function tm(s){s=Math.max(0,Math.round(s));var h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?h+'h '+m+'m':m?m+'m '+(s%60)+'s':s+'s'}
+function base(p){return p.substring(p.lastIndexOf('/')+1)}
+function pretty(n){return n.replace(/\.(img|iso)(\.xz)?$/i,'')}
+/* ---- modal ---- */
+var mcb=null;
+function ask(title,text,what,okLabel,danger,cb){$('mt').innerHTML=ic(danger?'alert':'info')+esc(title);$('mp').textContent=text;$('mw').innerHTML=what;
+  var b=$('mok');b.className=danger?'dan':'pri';b.innerHTML=okLabel;mcb=cb;$('modal').className='on';}
+function mclose(){$('modal').className='';mcb=null}
+$('mok').onclick=function(){var f=mcb;mclose();if(f)f();};
+/* ---- tabs ---- */
+function tab(t){}
+/* ---- render ---- */
+function render(){
+  var h='',used={},usedp={},cur=lastDl&&lastDl.state=='running'?lastDl:null;
+  function row(sel,na,onclick,iconn,name,meta,acts){var inner='<span class="radio"></span><span class="in">'+name+'</span><span class="im">'+meta+'</span>';
+    return '<div class="irow'+(sel?' sel':'')+(na?' na':'')+'">'+(onclick?'<button class="pickb" onclick="'+onclick+'">'+inner+'</button>':'<div class="pickb">'+inner+'</div>')+
+    '<div class="acts">'+acts+'</div></div>';}
+  function trash(fn){return '<button class="ghost" title="Delete" onclick="'+fn+'">'+ic('trash')+'</button>';}
+  PRESETS.forEach(function(p,pi){
+    var f=base(p.u),ii=-1,pp=-1;
+    S.imgs.forEach(function(m,i){if(m.path=='/data/LinuxFlasher/'+f)ii=i;});
+    S.parts.forEach(function(q,j){if(q.name==f+'.part')pp=j;});
+    if(ii>=0){used[ii]=1;if(pp>=0)usedp[pp]=1;var m=S.imgs[ii];
+      h+=row(S.img===ii,0,'pickImg('+ii+')','',esc(p.n),gb(m.size)+(m.sha256_file?'<span class="shield" title="Checksum verified">'+ic('shield')+'</span>':''),
+        trash('delImg(event,'+ii+')'));
+    }else if(cur&&cur.name==f){if(pp>=0)usedp[pp]=1;
+      h+=row(0,1,'','',esc(p.n),'<span class="dlp">'+(cur.total?(cur.got/cur.total*100).toFixed(0)+'%':mb(cur.got))+'</span>',
+        '<button title="Pause" onclick="dlcancel()">'+ic('pause')+'</button>');
+    }else if(pp>=0){usedp[pp]=1;
+      h+=row(0,1,'','',esc(p.n),'Paused &middot; '+mb(S.parts[pp].size),
+        '<button class="pri" title="Resume" onclick="resume('+pp+')">'+ic('play')+'</button>'+trash('delPart('+pp+')'));
+    }else{
+      h+=row(0,1,'','',esc(p.n),esc(p.s),'<button class="pri" title="Download" onclick="download(PRESETS['+pi+'].u,PRESETS['+pi+'].h)"'+(S.dlbusy||S.busy?' disabled':'')+'>'+ic('dl')+'</button>');
+    }
+  });
+  S.imgs.forEach(function(m,i){if(used[i])return;
+    var onps5=m.path.indexOf('/data/LinuxFlasher/')==0;
+    h+=row(S.img===i,0,'pickImg('+i+')','',esc(pretty(base(m.path))),gb(m.size)+(onps5?'':' &middot; USB')+(m.sha256_file?'<span class="shield" title="Checksum verified">'+ic('shield')+'</span>':''),
+      onps5?trash('delImg(event,'+i+')'):'');
+  });
+  if(cur&&!PRESETS.some(function(p){return base(p.u)==cur.name;}))
+    h+=row(0,1,'','',esc(pretty(cur.name)),'<span class="dlp">'+(cur.total?(cur.got/cur.total*100).toFixed(0)+'%':mb(cur.got))+'</span>','<button title="Pause" onclick="dlcancel()">'+ic('pause')+'</button>');
+  S.parts.forEach(function(q,j){if(usedp[j]||(cur&&q.name==cur.name+'.part'))return;
+    h+=row(0,1,'','',esc(pretty(q.name.replace(/\.part$/,''))),'Paused &middot; '+mb(q.size),(q.url?'<button class="pri" title="Resume" onclick="resume('+j+')">'+ic('play')+'</button>':'')+trash('delPart('+j+')'));});
+  $('imgs').innerHTML=h;
+  $('free').innerHTML=S.free?gb(S.free)+' free':'';
+  var im=S.img!=null?S.imgs[S.img]:null, need=im?(im.unpacked||im.size):0;
+  h='';
+  if(!S.disks.length)h='<div class="empty">No USB drives found. Plug one in.</div>';
+  var hidden=[];
+  S.disks.forEach(function(k,i){
+    var why=k.payload_drive?'payload drive':!k.writable_name?'not a USB drive':(im&&im.disk==k.name)?'holds the image':(need&&k.size&&need>k.size)?'too small, needs '+gb(need):'';
+    if(why){hidden.push(esc(dname(k))+' '+gb(k.size)+' ('+why+')');if(S.dev===i)S.dev=null;return;}
+    h+='<div class="irow'+(S.dev===i?' sel':'')+'"><button class="pickb" onclick="pickDev('+i+')"><span class="radio"></span>'+
+      '<span class="dcol"><span class="dl1"><span class="in">'+esc(k.product||k.descr||'USB drive')+'</span><span class="im">'+gb(k.size)+'</span></span>'+(k.labels?'<span class="dl2">has: '+esc(k.labels)+'</span>':'')+'</span></button></div>';
+  });
+  var onlyPayload=S.disks.length&&S.disks.every(function(k){return k.payload_drive||!k.writable_name;});
+  if(S.disks.length&&!h)h='<div class="empty">'+(onlyPayload?'Plug in a <b>second</b> USB drive to flash to'+(need?' (at least '+gb(need)+')':'')+'.<br>The drive you load the payload from is protected and can\'t be used.':'No usable USB drive. Plug in a drive'+(need?' of at least '+gb(need):'')+'.')+'</div>';
+  if(hidden.length)h+='<div class="hidl"><div class="lbl" style="margin:0 0 2px">Unavailable</div>'+hidden.map(function(t){return '<div class="hid">'+ic('lock')+'<span>'+t+'</span></div>';}).join('')+'</div>';
+  $('disks').innerHTML=h;
+  var dv=S.dev!=null?S.disks[S.dev]:null, ok=im&&dv&&!S.busy&&!S.dlbusy;
+  $('n1').className='num'+(im?' done':'');$('n2').className='num'+(dv?' done':'');
+  $('go').disabled=!ok;
+  $('go').innerHTML=ic('bolt')+(S.busy?'Flashing&hellip;':S.dlbusy?'Wait for the download to finish':ok?'Flash image':!im?'Choose an image first':'Choose a destination');
+  $('warnline').innerHTML=ic('alert')+'All data on the destination will be erased.';
+}
+function dname(k){return k.product||k.descr||(k.labels?k.labels.split(', ')[0]:'')||'USB drive';}
+function pickImg(i){if(S.busy)return;S.img=i;if(S.dev!=null){var k=S.disks[S.dev],m=S.imgs[i];if(m.disk==k.name||((m.unpacked||m.size)>k.size))S.dev=null;}render();}
+function pickDev(i){if(S.busy)return;S.dev=i;render();}
+function refresh(){
+  get('/api/info',function(d){
+    if(d.ok===false)return;
+    $('ver').textContent='v'+d.version;$('b-boot').style.display=d.boot?'':'none';
+    var keep=S.dev!=null&&S.disks[S.dev]?S.disks[S.dev].name:null;S.disks=d.disks||[];S.dev=null;
+    S.disks.forEach(function(k,i){if(k.name===keep)S.dev=i});
+    get('/api/images',function(r){var keepi=S.img!=null&&S.imgs[S.img]?S.imgs[S.img].path:null;S.imgs=r.images||[];S.img=null;S.parts=r.partial||[];S.free=r.free||0;
+      S.imgs.forEach(function(m,i){if(m.path===keepi)S.img=i});render();});
+  });
+}
+/* ---- activity panel ---- */
+function stages(list,cur,err){var h='';list.forEach(function(s,i){var c=i<cur?'fin':i==cur?(err?'err':'now'):'';
+  h+=(i?'<div class="line"></div>':'')+'<div class="stg '+c+'"><b>'+(i<cur?ic('check'):err&&i==cur?ic('x'):(i+1))+'</b>'+s+'</div>';});$('stages').innerHTML=h;}
+function activity(o){
+  $('aidle').style.display=o?'none':'';$('arun').style.display=o?'':'none';
+  if(!o){$('aicon').innerHTML=ic('ok');$('atitle').textContent='Ready';$('asub').textContent='Pick an image and a destination.';$('acancel').style.display='none';return;}
+  $('aicon').innerHTML=ic(o.icon);$('aicon').style.color=o.color||'';
+  $('atitle').textContent=o.title;$('asub').textContent=o.sub;
+  stages(o.stages,o.stage,o.err);
+  $('bar').className='bar'+(o.err?' bad':o.done?' ok':'');$('bar').firstChild.style.width=(Math.min(1,o.frac||0)*100).toFixed(1)+'%';
+  $('p1').textContent=o.p1||'';$('p2').textContent=o.p2||'';
+  $('t1').textContent=o.speed||'–';$('t2').textContent=o.left||'–';$('t3').textContent=o.elapsed||'–';
+  $('amsg').style.display=(o.err||o.done)?'':'none';$('amsg').className='msg '+(o.err?'bad':o.done?'ok':'info');$('amsg').innerHTML=ic(o.err?'alert':o.done?'ok':'info')+'<div>'+o.msg+'</div>';
+  $('out').textContent=o.log||'';$('detsum').innerHTML=ic('list')+'Technical details';
+  $('acancel').style.display=o.cancel?'':'none';$('acancel').className=o.cancelClass||'dan';$('acancel').innerHTML=ic(o.cancelIcon||'x')+(o.cancelLabel||'Cancel');
+}
+var lastFlash=null,lastDl=null;
+function show(){ /* the running job wins, else the most recent result */
+  var f=lastFlash,d=lastDl,fr=f&&(f.state=='writing'||f.state=='verifying'),dr=d&&d.state=='running';
+  if(fr||(!dr&&f&&f.state!='idle'&&(!d||d.state=='idle'||(f.t||0)>=(d.t||0))))activity(flashView(f));
+  else if(d&&d.state!='idle')activity(dlView(d));else activity(null);
+}
+function flashView(p){
+  var w=p.state=='writing',v=p.state=='verifying',run=w||v,tot=p.total||0;
+  var frac=w?(tot?p.written/tot:(p.img_size?p.read/p.img_size:0)):v?(p.written?p.verified/p.written:0):p.state=='done'?1:(tot?p.written/tot:0);
+  var secs=w?p.elapsed:(p.elapsed-p.write_secs),done=w?p.written:p.verified,rate=secs>0?done/secs:0;
+  var left=w?(tot?(tot-p.written)/(rate||1):0):v?(p.written-p.verified)/(rate||1):0;
+  var err=p.state=='failed'||p.state=='cancelled',fin=p.state=='done';
+  var log='Image:  '+p.img+'\nDrive:  '+p.label+' ('+p.dev+')';
+  if(p.sidecar==1)log+='\nImage file matches its .sha256';
+  if(p.sha_written)log+='\nWritten  sha256: '+p.sha_written;
+  if(p.sha_readback)log+='\nReadback sha256: '+p.sha_readback+(p.sha_readback==p.sha_written?'  (match)':'');
+  return {icon:fin?'ok':err?'alert':'bolt',color:fin?'var(--ok)':err?'var(--bad)':'var(--acc)',
+    title:fin?'Done':err?(p.state=='cancelled'?'Cancelled':'Flash failed'):w?'Writing…':'Verifying…',
+    sub:pretty(base(p.img))+' → '+p.label,
+    stages:['Write','Verify','Done'],stage:fin?3:v?1:w?0:(p.verified?1:0),err:err,done:fin,frac:frac,
+    p1:run?(frac*100).toFixed(1)+'%':'',p2:mb(w?p.written:p.verified)+(w&&tot?' of '+mb(tot):v?' of '+mb(p.written):''),
+    speed:run&&rate?(rate/1e6).toFixed(1)+' MB/s':fin&&p.write_secs>0?(p.written/p.write_secs/1e6).toFixed(1)+' MB/s':'',left:run&&rate?tm(left):'',elapsed:tm(p.elapsed),
+    msg:fin?'<b>Written and verified.</b> Unplug it and boot it with your loader.':esc(p.msg),
+    log:log,cancel:run,cancelLabel:'Cancel',cancelIcon:'x'};
+}
+function dlView(d){
+  var run=d.state=='running',fin=d.state=='done',err=d.state=='failed',pz=d.state=='paused';
+  var f=d.total?d.got/d.total:0,rate=d.elapsed>0?(d.got-d.resumed_from)/d.elapsed:0;
+  return {icon:fin?'ok':err?'alert':pz?'pause':'cloud',color:fin?'var(--ok)':err?'var(--bad)':'var(--acc)',
+    title:fin?'Downloaded':err?'Download failed':pz?'Paused':'Downloading…',sub:pretty(d.name),
+    stages:['Download','Check','Saved'],stage:fin?3:run?(f>=1?1:0):0,err:err,done:fin,frac:fin?1:f,
+    p1:d.total?(f*100).toFixed(1)+'%':'',p2:mb(d.got)+(d.total?' of '+mb(d.total):''),
+    speed:run&&rate?(rate/1e6).toFixed(1)+' MB/s':'',left:run&&rate&&d.total?tm((d.total-d.got)/rate):'',elapsed:tm(d.elapsed),
+    msg:fin?'<b>Saved on this PS5.</b> '+(d.sidecar?'The checksum matched. ':'')+'Pick it in step 1 and flash it.':esc(d.msg),
+    log:'Link: '+d.url+(d.pinned?'\nChecked against the built-in SHA-256':'')+(d.log?'\n\n'+d.log:''),cancel:run||((pz||err)&&d.got>0),cancelLabel:run?'Pause':'Resume',cancelIcon:run?'pause':'play',cancelClass:run?'dan':'pri'};
+}
+function cancelAny(){
+  if(lastDl&&lastDl.state=='running'){get('/api/dlcancel',function(){});return;}
+  if(lastDl&&(lastDl.state=='paused'||lastDl.state=='failed')){download(lastDl.url,lastDl.expect||pinned(lastDl.url));return;}
+  ask('Cancel flashing?','The drive will be left half-written. You can flash it again any time.','', 'Cancel flashing',true,function(){get('/api/cancel',function(){})});
+}
+/* ---- actions ---- */
+function flash(){
+  var m=S.imgs[S.img],k=S.disks[S.dev];
+  ask('Erase this drive?','Everything on the drive is replaced with the image. This cannot be undone.',
+    ic('usb')+' <b>'+esc(k.product||k.descr||'USB drive')+' &middot; '+gb(k.size)+'</b>'+(k.labels?' <span class="ss">has: '+esc(k.labels)+'</span>':'')+'<br>'+ic('disc')+' '+esc(pretty(base(m.path))),
+    ic('bolt')+'Erase and flash',true,function(){
+    get('/api/flash?dev='+k.name+'&img='+encodeURIComponent(m.path),function(r){
+      if(!r.ok){activity({icon:'alert',color:'var(--bad)',title:'Not started',sub:'',stages:['Write','Verify','Done'],stage:0,err:true,frac:0,msg:esc(r.detail||r.error),log:''});return;}
+      S.busy=true;render();poll();});});
+}
+var PRESETS=[
+ {n:'PS5-CachyOS 7.3.4',d:'KDE desktop + Steam Gaming Mode',s:'2.0 GB',r:'Needs a 16 GB+ drive',u:'https://github.com/abrocoma/PS5-CachyOS/releases/download/image-2026-11-14/ps5-cachyos-7.3.4-pb33e.img.xz',h:'0144091cc0c8459e7249c72cc54f122a02c0a534229110fdabe9fbbab6d8c734'}];
+function download(u,h){
+  if(!u){activity({icon:'info',title:'Paste a link first',sub:'',stages:['Download','Check','Saved'],stage:0,frac:0,msg:'Paste a link to an .img, .iso, .img.xz or .iso.xz file, or use the download button next to an image.',log:''});return;}
+  get('/api/download?url='+encodeURIComponent(u)+(h?'&sha='+h:''),function(r){
+    if(!r.ok){activity({icon:'alert',color:'var(--bad)',title:'Download not started',sub:'',stages:['Download','Check','Saved'],stage:0,err:true,frac:0,msg:esc(r.detail||r.error),log:'Link: '+u});return;}
+    S.dlbusy=true;render();dlpoll();});}
+function pinned(u){for(var i=0;i<PRESETS.length;i++)if(PRESETS[i].u==u)return PRESETS[i].h;return '';}
+function resume(i){download(S.parts[i].url,pinned(S.parts[i].url));}
+function delPart(i){ask('Delete unfinished download?','The part downloaded so far is removed.',esc(pretty(S.parts[i].name.replace(/\.part$/,''))),ic('trash')+'Delete',true,function(){get('/api/delimg?img='+encodeURIComponent('/data/LinuxFlasher/'+S.parts[i].name),function(){refresh()})});}
+function delImg(ev,i){if(ev)ev.stopPropagation();var m=S.imgs[i];
+  ask('Delete from this PS5?','Frees '+gb(m.size)+'. You can download it again later.',esc(pretty(base(m.path))),ic('trash')+'Delete',true,function(){
+  get('/api/delimg?img='+encodeURIComponent(m.path),function(r){S.img=null;refresh();});});}
+function poll(){get('/api/progress',function(p){if(p.ok===false){setTimeout(poll,2000);return;}
+  var run=p.state=='writing'||p.state=='verifying';S.busy=run;p.t=Date.now();if(p.state!='idle'||!lastFlash)lastFlash=p;show();render();
+  if(run)setTimeout(poll,1000);else if(p.state!='idle'&&S.wasFlash)refresh();S.wasFlash=run;});}
+function dlpoll(){get('/api/dlprogress',function(d){if(d.ok===false){setTimeout(dlpoll,2000);return;}
+  var run=d.state=='running';S.dlbusy=run;S.dlname=d.name;d.t=Date.now();if(d.state!='idle'||!lastDl)lastDl=d;show();render();
+  if(run)setTimeout(dlpoll,1000);else if(d.state!='idle'&&S.wasDl)refresh();S.wasDl=run;});}
+function test(kind,dev){
+  var go=function(){activity({icon:'tool',title:'Running '+kind+' test…',sub:'/dev/'+dev,stages:['Test'],stage:0,frac:0,msg:'Working…',log:''});
+    get('/api/'+kind+'?dev='+dev,function(r){activity({icon:r.ok?'ok':'alert',color:r.ok?'var(--ok)':'var(--bad)',title:r.ok?'Test passed':'Test failed',sub:'/dev/'+dev+' · '+kind+' test',stages:['Test'],stage:r.ok?1:0,err:!r.ok,done:r.ok,frac:1,
+      msg:esc(r.step+(r.errno?' (errno '+r.errno+', '+r.error+')':'')),log:r.detail||''});refresh();});};
+  if(kind=='write')ask('Run the write test?','It unmounts the drive, then writes back the same 1 MB it reads. Nothing should change.','/dev/'+esc(dev),'Run test',false,go);else go();
+}
+function bootLinux(){ask('Boot Linux?','The PS5 switches to Linux with your loader. Make sure the Linux drive is plugged in.','',ic('play')+'Boot Linux',false,function(){
+  get('/api/bootlinux',function(r){if(r.ok){$('atitle').textContent='Starting Linux\u2026';$('asub').textContent=r.detail||'';}else activity({icon:'alert',color:'var(--bad)',title:'Boot failed',sub:'',stages:['Boot'],stage:0,err:true,frac:0,msg:esc(r.detail||r.error),log:''});});});}
+function quit(){ask('Stop Linux Flasher?','The page stops working until you load the payload again.','', ic('power')+'Stop',true,function(){
+  get('/api/quit',function(r){if(r.ok){conn(false);$('atitle').textContent='Stopped';$('asub').textContent='Load the payload again to use it.';}else activity({icon:'alert',color:'var(--bad)',title:'Can’t stop now',sub:'',stages:['Stop'],stage:0,err:true,frac:0,msg:esc(r.detail||r.error),log:''});});});}
+/* static icons */
+$('logo').innerHTML=ic('usb');$('i1').innerHTML=ic('disc');$('i2').innerHTML=ic('usb');$('i3').innerHTML=ic('bolt');$('b-off').innerHTML=ic('power');$('b-boot').innerHTML=ic('play')+'Boot Linux';
+
+activity(null);refresh();poll();dlpoll();
+setInterval(function(){if(!S.busy&&!S.dlbusy&&!$('modal').className)refresh();},4000);
+</script>
+</body></html>

@@ -1,0 +1,11 @@
+*.elf
+*.o
+page.html.h
+mock/
+*.png
+!docs/images/*.png
+!src/assets/*.png
+
+# personal build only (third-party loader binary)
+src/assets/personal/
+*_personal.elf
