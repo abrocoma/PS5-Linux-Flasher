@@ -77,44 +77,10 @@ static void add_image(buf_t *out, const char *path) {
   bputs(out, "}");
 }
 
-/* .img / .img.xz in the root and one folder level of every /mnt/usbN */
+/* only images downloaded with the Flasher (on the PS5 itself); files on USB drives are not listed */
 static void api_images(buf_t *out) {
   img_count = 0;
   bputs(out, "{\"images\":[");
-  for (int u = 0; u < 8; u++) {
-    char root[32];
-    snprintf(root, sizeof(root), "/mnt/usb%d", u);
-    DIR *d = opendir(root);
-    if (!d)
-      continue;
-    struct dirent *e;
-    while ((e = readdir(d)) && img_count < 64) {
-      char p[1024];
-      if (e->d_name[0] == '.')
-        continue;
-      snprintf(p, sizeof(p), "%s/%s", root, e->d_name);
-      struct stat st;
-      if (stat(p, &st) != 0)
-        continue;
-      if (S_ISREG(st.st_mode) && is_image_name(e->d_name)) {
-        add_image(out, p);
-      } else if (S_ISDIR(st.st_mode) && strcmp(e->d_name, "System Volume Information") &&
-                 strcmp(e->d_name, "$RECYCLE.BIN")) {
-        DIR *d2 = opendir(p);
-        struct dirent *e2;
-        while (d2 && (e2 = readdir(d2)) && img_count < 64) {
-          if (!is_image_name(e2->d_name))
-            continue;
-          char p2[1100];
-          snprintf(p2, sizeof(p2), "%s/%s", p, e2->d_name);
-          add_image(out, p2);
-        }
-        if (d2)
-          closedir(d2);
-      }
-    }
-    closedir(d);
-  }
   /* images downloaded to the PS5 itself */
   DIR *dd = opendir(DL_DIR);
   if (dd) {
@@ -228,7 +194,7 @@ static void api_flash(const char *img, const char *dev, buf_t *out) {
     result(out, 0, "refused", EPERM, "That is your payload drive (it holds Linux_Flasher.elf). It is never written.");
     return;
   }
-  if ((strncmp(img, "/mnt/usb", 8) != 0 && strncmp(img, DL_DIR "/", sizeof(DL_DIR)) != 0) || strstr(img, "..") || !is_image_name(strrchr(img, '/') ? strrchr(img, '/') + 1 : img)) {
+  if (strncmp(img, DL_DIR "/", sizeof(DL_DIR)) != 0 || strstr(img, "..") || !is_image_name(strrchr(img, '/') ? strrchr(img, '/') + 1 : img)) {
     result(out, 0, "refused", EINVAL, "Pick an image (.img, .iso, .img.xz or .iso.xz) from the list.");
     return;
   }

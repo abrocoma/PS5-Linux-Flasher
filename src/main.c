@@ -39,7 +39,7 @@
 int boot_linux(char *src, size_t sl, char *err, size_t el);
 #endif
 
-#define VERSION "1.6.2"
+#define VERSION "1.6.3"
 #define PORT 9077
 #define TEST_BYTES (1024 * 1024)
 
