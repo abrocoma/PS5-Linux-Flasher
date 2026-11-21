@@ -369,7 +369,7 @@ function flash(){
       S.busy=true;render();poll();});});
 }
 var PRESETS=[
- {n:'PS5-CachyOS 7.3.4',d:'KDE desktop + Steam Gaming Mode',s:'2.0 GB',r:'Needs a 16 GB+ drive',u:'https://github.com/abrocoma/PS5-CachyOS/releases/download/image-2026-11-17/ps5-cachyos-7.3.4-p1472.img.xz',h:'c25c046ddbe3d705df36cc51ff3763a6129ef0313822e13efaf29ca9311c0e4b'}];
+ {n:'PS5-CachyOS 7.3.5',d:'KDE desktop + Steam Gaming Mode',s:'2.1 GB',r:'Needs a 16 GB+ drive',u:'https://github.com/abrocoma/PS5-CachyOS/releases/download/image-2026-11-20/ps5-cachyos-7.3.5-pc8fe.img.xz',h:'3f4dd6b0e1f73db6b669aa759f7a120d9dee16b9c154a3df567fad32df928323'}];
 function download(u,h){
   if(!u){activity({icon:'info',title:'Paste a link first',sub:'',stages:['Download','Check','Saved'],stage:0,frac:0,msg:'Paste a link to an .img, .iso, .img.xz or .iso.xz file, or use the download button next to an image.',log:''});return;}
   get('/api/download?url='+encodeURIComponent(u)+(h?'&sha='+h:''),function(r){
