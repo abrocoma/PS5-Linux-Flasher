@@ -4,7 +4,7 @@ Flash Linux to a USB drive **from the PS5 itself**. No PC needed.
 
 Linux Flasher is a payload for jailbroken PS5 consoles. It opens a page in the PS5 browser (or on your phone) where you download the image, pick a USB drive and press Flash.
 
-It ships with one image: [PS5-CachyOS](https://github.com/abrocoma/PS5-CachyOS), tested and stable on firmware 13.60.
+It ships with one image: [PS5-CachyOS](https://github.com/abrocoma/PS5-CachyOS) 7.3.5 (2026-11-20), tested on firmware 13.60 on the PS5 Fat and PS5 Pro.
 
 ![Linux Flasher](docs/images/linux-flasher-1.6.2.png)
 
@@ -22,11 +22,13 @@ It ships with one image: [PS5-CachyOS](https://github.com/abrocoma/PS5-CachyOS),
 
 Get `Linux_Flasher.elf` from [Releases](https://github.com/abrocoma/PS5-Linux-Flasher/releases/latest).
 
+Version 1.6.3 and older can no longer download the image (the old image was removed), so use 1.6.4 or newer.
+
 ## How to use
 
 1. Copy `Linux_Flasher.elf` to the **root** of the USB drive you load payloads from.
 2. Load it like any other payload. The page opens in the PS5 browser (or open the address from the notification on your phone).
-3. **Image:** download PS5-CachyOS with the download icon (once), then select it.
+3. **Image:** download **PS5-CachyOS 7.3.5** with the download icon (once), then select it.
 4. **Destination:** select the USB drive to use. It will be **erased**. At least 16 GB, 64 GB or more recommended.
 5. **Flash:** press **Flash image** and wait for **Done**. Then boot the drive with your Linux loader.
 
